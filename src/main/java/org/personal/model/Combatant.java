@@ -8,6 +8,7 @@ import java.util.Random;
 
 public abstract class Combatant {
     protected Team team;
+    protected int maxHp;
     protected int hp;
     protected int attackPower;
     protected int x;
@@ -18,6 +19,7 @@ public abstract class Combatant {
 
     public Combatant(Team team, int hp, int attackPower, int x, int y) {
         this.team = team;
+        this.maxHp = hp;
         this.hp = hp;
         this.attackPower = attackPower;
         this.x = x;
@@ -75,8 +77,6 @@ public abstract class Combatant {
         }
 
 
-
-
     }
 
     public boolean isAlive() {
@@ -89,6 +89,15 @@ public abstract class Combatant {
             this.hp = 0;
         }
 
+    }
+
+    public void heal(int healAmount){
+
+        if (this.hp +  healAmount > maxHp){
+            this.hp = maxHp;
+        }else{
+            this.hp += healAmount;
+        }
     }
 
     public void setPosition(int newX, int newY) {

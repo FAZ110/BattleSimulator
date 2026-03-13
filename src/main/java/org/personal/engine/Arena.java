@@ -2,9 +2,14 @@ package org.personal.engine;
 
 import org.personal.model.Combatant;
 import org.personal.model.Team;
+import org.personal.model.environment.Consumable;
+import org.personal.model.environment.HealthPotion;
+import org.personal.model.environment.Obstacle;
+import org.personal.model.environment.Wall;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class Arena {
     private static final String RESET = "\u001B[0m";
@@ -14,11 +19,16 @@ public class Arena {
     private int width;
     private Map<Position, Combatant> grid;
 
+    private Map<Position, Obstacle> obstacles;
+    private Map<Position, Consumable> consumables;
+
 
     public Arena(int height, int width) {
         this.height = height;
         this.width = width;
-        this.grid = new HashMap<Position, Combatant>();
+        this.grid = new HashMap<>();
+        this.obstacles = new HashMap<>();
+        this.consumables = new HashMap<>();
     }
 
     public void spawn(Combatant fighter){
@@ -26,10 +36,53 @@ public class Arena {
         grid.put(position, fighter);
     }
 
+    public void spawnObstacle(Position pos, Obstacle obstacle) {
+        obstacles.put(pos, obstacle);
+    }
+
+    public void spawnConsumable(Position pos, Consumable consumable) {
+        consumables.put(pos, consumable);
+    }
+
+    public void generateEnvironment(int numberOfWalls, int numberOfConsumables){
+        Random random = new Random();
+        System.out.println("Generating environment...");
+
+
+        for(int i = 0; i < numberOfWalls; i++){
+            int randX, randY;
+
+            do{
+                randX = random.nextInt(width);
+                randY = random.nextInt(height);
+            }while (isTileTaken(randX, randY));
+
+            spawnObstacle(new Position(randX, randY), new Wall());
+
+        }
+
+        for(int i = 0; i < numberOfConsumables; i++){
+            int randX, randY;
+
+            do{
+                randX = random.nextInt(width);
+                randY = random.nextInt(height);
+            }while (isTileTaken(randX, randY));
+
+            spawnConsumable(new Position(randX, randY), new HealthPotion());
+
+        }
+    }
+
+
     public boolean isOccupied(int x, int y){
         return grid.containsKey(new Position(x, y));
     }
 
+    public boolean isTileTaken(int x, int y){
+        Position pos = new Position(x, y);
+        return grid.containsKey(pos) || obstacles.containsKey(pos) || consumables.containsKey(pos);
+    }
     public boolean isWithinBounds(int x, int y){
         return x >= 0 && x < width && y >= 0 && y < height;
     }
@@ -46,6 +99,10 @@ public class Arena {
             return false;
         }
 
+        if(obstacles.containsKey(newPosition)){
+            return false;
+        }
+
         if (isOccupied(newPosition.x(), newPosition.y())){
 //            System.out.println(fighter.getSymbol() + "'s new position is occupied");
             return false;
@@ -55,6 +112,12 @@ public class Arena {
         grid.put(newPosition, fighter);
 
         fighter.setPosition(newPosition.x(), newPosition.y());
+
+        if (consumables.containsKey(newPosition)){
+            Consumable item = consumables.get(newPosition);
+            item.consume(fighter);
+            consumables.remove(newPosition);
+        }
         return true;
 
     }
@@ -63,6 +126,7 @@ public class Arena {
 
         for(int y = 0; y < height; y++){
             for(int x = 0; x < width; x++){
+                Position currentPos = new Position(x, y);
 
                 if(isOccupied(x, y)){
                     Combatant fighter = getFighterAt(x, y);
@@ -72,7 +136,17 @@ public class Arena {
                     if (fighter.getTeam() == Team.BLUE) color = BLUE;
 
                     System.out.print("[" + color + fighter.getSymbol() + RESET + "]" );
-                }else{
+                }
+                else if (obstacles.containsKey(currentPos)) {
+                    Obstacle obs = obstacles.get(currentPos);
+                    System.out.print("[" + obs.getSymbol() + "]");
+                }
+                else if (consumables.containsKey(currentPos)) {
+                    Consumable cons = consumables.get(currentPos);
+                    System.out.print("[\u001B[32m" + cons.getSymbol() + "\u001B[0m]");
+                }
+
+                else{
                     System.out.print("[ ]");
                 }
             }
