@@ -7,13 +7,13 @@ public class Zombie extends Combatant{
         super(team, hp, attackPower, x, y);
     }
 
-    @Override
-    public void takeTurn(Arena arena){
-
-        boolean attacked = attemptAttack(arena);
-
-        if (!attacked){
-            moveRandomly(arena);
-        }
-    }
+//    @Override
+//    public void takeTurn(Arena arena){
+//
+//        boolean attacked = attemptAttack(arena);
+//
+//        if (!attacked){
+//            moveRandomly(arena);
+//        }
+//    }
 }

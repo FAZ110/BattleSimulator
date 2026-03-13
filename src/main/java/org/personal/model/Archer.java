@@ -10,15 +10,15 @@ public class Archer extends Combatant{
     }
 
 
-    @Override
-    public void takeTurn(Arena arena){
-        boolean didAttack = attemptAttack(arena);
-
-        if (!didAttack){
-            moveRandomly(arena);
-        }
-        moveRandomly(arena);
-    }
+//    @Override
+//    public void takeTurn(Arena arena){
+//        boolean didAttack = attemptAttack(arena);
+//
+//        if (!didAttack){
+//            moveRandomly(arena);
+//        }
+//        moveRandomly(arena);
+//    }
 
     @Override
     public boolean attemptAttack(Arena arena){

@@ -93,6 +93,8 @@ public class Arena {
 
     public Combatant getFighterAt(int x, int y){return  grid.get(new Position(x, y));}
 
+    public java.util.Collection<Combatant> getAllFighters(){return grid.values();}
+
     public boolean moveFighter(Combatant fighter, Position newPosition){
         if (!isWithinBounds(newPosition.x(), newPosition.y())){
 //            System.out.println(fighter.getSymbol() +  " cannot move out of bounds");

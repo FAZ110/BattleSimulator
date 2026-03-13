@@ -27,11 +27,16 @@ public abstract class Combatant {
     }
 
     public void takeTurn(Arena arena) {
+        boolean attacked = attemptAttack(arena);
 
-        if(random.nextBoolean()){
-            attemptAttack(arena);
-        }else{
-            moveRandomly(arena);
+        if(!attacked){
+            Combatant prey = findClosestEnemy(arena);
+
+            if (prey != null) {
+                moveTowards(arena, prey);
+            }else{
+                moveRandomly(arena);
+            }
         }
 
     }
@@ -77,6 +82,42 @@ public abstract class Combatant {
         }
 
 
+    }
+
+    protected Combatant findClosestEnemy(Arena arena) {
+        Combatant closestEnemy = null;
+        int shortestDistance = Integer.MAX_VALUE;
+
+        for (Combatant other : arena.getAllFighters()){
+
+            if(other.getTeam() != this.team && other.isAlive()){
+
+                int distanceX = Math.abs(this.x - other.getX());
+                int distanceY = Math.abs(this.y - other.getY());
+
+                int distance = Math.max(distanceX, distanceY);
+
+                if (distance < shortestDistance) {
+                    shortestDistance = distance;
+                    closestEnemy = other;
+                }
+            }
+        }
+        return closestEnemy;
+    }
+
+    protected void moveTowards(Arena arena, Combatant target) {
+        int desiredDx = Integer.compare(target.getX(), this.x);
+        int desiredDy = Integer.compare(target.getY(), this.y);
+
+        int targetX = this.x + desiredDx;
+        int targetY = this.y + desiredDy;
+        Position stepPosition = new Position(targetX, targetY);
+
+        boolean successfulMove = arena.moveFighter(this, stepPosition);
+        if (!successfulMove) {
+            moveRandomly(arena);
+        }
     }
 
     public boolean isAlive() {
