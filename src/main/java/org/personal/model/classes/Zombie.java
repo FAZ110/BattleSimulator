@@ -1,7 +1,8 @@
-package org.personal.model;
-import org.personal.engine.Arena;
+package org.personal.model.classes;
+import org.personal.model.Combatant;
+import org.personal.model.Team;
 
-public class Zombie extends Combatant{
+public class Zombie extends Combatant {
 
     public Zombie(Team team, int hp, int attackPower, int x, int y) {
         super(team, hp, attackPower, x, y);

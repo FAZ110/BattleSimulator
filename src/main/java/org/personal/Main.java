@@ -21,7 +21,7 @@ public class Main {
 
         Random random = new Random();
 
-        for (int i=0 ; i<20; i++){
+        for (int i=0 ; i<25; i++){
 
             int randomX, randomY;
 

@@ -1,5 +1,9 @@
 package org.personal.model;
 
+import org.personal.model.classes.Archer;
+import org.personal.model.classes.Human;
+import org.personal.model.classes.Zombie;
+
 public class CombatantFactory {
 
     public static Combatant createHuman(Team team, int x, int y){

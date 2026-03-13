@@ -1,9 +1,11 @@
-package org.personal.model;
+package org.personal.model.classes;
 
 import org.personal.engine.Arena;
 import org.personal.engine.Direction;
+import org.personal.model.Combatant;
+import org.personal.model.Team;
 
-public class Archer extends Combatant{
+public class Archer extends Combatant {
 
     public Archer(Team team, int hp, int attackPower, int x, int y) {
         super(team, hp, attackPower, x, y);

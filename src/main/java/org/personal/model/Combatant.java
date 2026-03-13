@@ -80,8 +80,6 @@ public abstract class Combatant {
             succesfulMove = arena.moveFighter(this, newPosition);
             attempts++;
         }
-
-
     }
 
     protected Combatant findClosestEnemy(Arena arena) {
@@ -152,6 +150,7 @@ public abstract class Combatant {
     public int getX() { return x; }
     public int getY() { return y; }
     public Team getTeam() { return team; }
+    public int getHp() { return hp; }
 
 
 }
