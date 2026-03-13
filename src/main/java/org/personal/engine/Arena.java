@@ -1,11 +1,15 @@
 package org.personal.engine;
 
 import org.personal.model.Combatant;
+import org.personal.model.Team;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Arena {
+    private static final String RESET = "\u001B[0m";
+    private static final String RED = "\u001B[31m";
+    private static final String BLUE = "\u001B[34m";
     private int height;
     private int width;
     private Map<Position, Combatant> grid;
@@ -38,12 +42,12 @@ public class Arena {
 
     public boolean moveFighter(Combatant fighter, Position newPosition){
         if (!isWithinBounds(newPosition.x(), newPosition.y())){
-            System.out.println(fighter.getName() +  " cannot move out of bounds");
+//            System.out.println(fighter.getSymbol() +  " cannot move out of bounds");
             return false;
         }
 
         if (isOccupied(newPosition.x(), newPosition.y())){
-            System.out.println(fighter.getName() + "'s new position is occupied");
+//            System.out.println(fighter.getSymbol() + "'s new position is occupied");
             return false;
         }
 
@@ -62,7 +66,12 @@ public class Arena {
 
                 if(isOccupied(x, y)){
                     Combatant fighter = getFighterAt(x, y);
-                    System.out.print("[" + fighter.getName().charAt(0) + "]" );
+
+                    String color = RESET;
+                    if (fighter.getTeam() == Team.RED) color = RED;
+                    if (fighter.getTeam() == Team.BLUE) color = BLUE;
+
+                    System.out.print("[" + color + fighter.getSymbol() + RESET + "]" );
                 }else{
                     System.out.print("[ ]");
                 }
