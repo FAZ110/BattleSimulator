@@ -26,29 +26,32 @@ public class Arena {
         return grid.containsKey(new Position(x, y));
     }
 
-    public Combatant getAtPosition(int x, int y){
-        return grid.get(new Position(x, y));
-    }
-
     public boolean isWithinBounds(int x, int y){
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-    public void moveFighter(Combatant fighter, Position newPosition){
+    public void removeFighter(Combatant fighter){
+        grid.remove(new Position(fighter.getX(), fighter.getY()));
+    }
+
+    public Combatant getFighterAt(int x, int y){return  grid.get(new Position(x, y));}
+
+    public boolean moveFighter(Combatant fighter, Position newPosition){
         if (!isWithinBounds(newPosition.x(), newPosition.y())){
             System.out.println(fighter.getName() +  " cannot move out of bounds");
-            return;
+            return false;
         }
 
         if (isOccupied(newPosition.x(), newPosition.y())){
             System.out.println(fighter.getName() + "'s new position is occupied");
-            return;
+            return false;
         }
 
         grid.remove(new Position(fighter.getX(), fighter.getY()));
         grid.put(newPosition, fighter);
 
         fighter.setPosition(newPosition.x(), newPosition.y());
+        return true;
 
     }
 
@@ -58,7 +61,7 @@ public class Arena {
             for(int x = 0; x < width; x++){
 
                 if(isOccupied(x, y)){
-                    Combatant fighter = getAtPosition(x, y);
+                    Combatant fighter = getFighterAt(x, y);
                     System.out.print("[" + fighter.getName().charAt(0) + "]" );
                 }else{
                     System.out.print("[ ]");
