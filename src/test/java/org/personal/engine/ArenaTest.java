@@ -15,7 +15,7 @@ class ArenaTest {
 
     @BeforeEach
     void setUp() {
-        arena = new Arena(5, 5);
+        arena = new Arena(5, 5, 1L);
     }
 
     @Test

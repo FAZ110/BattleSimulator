@@ -12,16 +12,17 @@ public class Main {
 
         System.out.println("Starting Battle simulation...");
 
-        int height = 20;
-        int width = 20;
+        int height = 8;
+        int width = 8;
+        long seed = 42L;
 
-        Arena arena = new Arena(height, width);
-        arena.generateEnvironment(5,3);
+        Arena arena = new Arena(height, width, seed);
+        arena.generateEnvironment(7,3);
         Simulation sim = new Simulation(arena, 50);
 
-        Random random = new Random();
+        Random random = new Random(seed);
 
-        for (int i=0 ; i<25; i++){
+        for (int i=0 ; i<3; i++){
 
             int randomX, randomY;
 
@@ -33,7 +34,7 @@ public class Main {
             sim.addFighter(CombatantFactory.createHuman(Team.BLUE, randomX, randomY));
         }
 
-        for (int i=0 ; i<10; i++){
+        for (int i=0 ; i<3; i++){
 
             int randomX, randomY;
 

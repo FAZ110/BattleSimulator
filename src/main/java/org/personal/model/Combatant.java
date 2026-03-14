@@ -4,24 +4,24 @@ import org.personal.engine.Arena;
 import org.personal.engine.Direction;
 import org.personal.engine.Position;
 
-import java.util.Random;
+import java.util.*;
 
 public abstract class Combatant {
     protected Team team;
     protected int maxHp;
     protected int hp;
     protected int attackPower;
+    protected int speed;
     protected int x;
     protected int y;
 
-    protected Random random = new Random();
 
-
-    public Combatant(Team team, int hp, int attackPower, int x, int y) {
+    public Combatant(Team team, int hp, int attackPower, int speed, int x, int y) {
         this.team = team;
         this.maxHp = hp;
         this.hp = hp;
         this.attackPower = attackPower;
+        this.speed = speed; //priority
         this.x = x;
         this.y = y;
     }
@@ -70,7 +70,7 @@ public abstract class Combatant {
         int attempts = 0;
 
         while (!succesfulMove && attempts < 10) {
-            int randomIndex = random.nextInt(allDirections.length);
+            int randomIndex = arena.getRandom().nextInt(allDirections.length);
             Direction direction = allDirections[randomIndex];
 
             int newX = this.x + direction.getDx();
@@ -105,17 +105,63 @@ public abstract class Combatant {
     }
 
     protected void moveTowards(Arena arena, Combatant target) {
-        int desiredDx = Integer.compare(target.getX(), this.x);
-        int desiredDy = Integer.compare(target.getY(), this.y);
+        Position nextStep = getNextStepTowards(arena, target);
 
-        int targetX = this.x + desiredDx;
-        int targetY = this.y + desiredDy;
-        Position stepPosition = new Position(targetX, targetY);
-
-        boolean successfulMove = arena.moveFighter(this, stepPosition);
-        if (!successfulMove) {
+        if (nextStep != null) {
+            boolean successfulMove = arena.moveFighter(this, nextStep);
+            if (!successfulMove) {
+                moveRandomly(arena);
+            }
+        }else{
             moveRandomly(arena);
         }
+    }
+
+
+    // BFS
+    protected Position getNextStepTowards(Arena arena, Combatant target) {
+        Position start = new Position(this.x, this.y);
+        Position targetPos = new Position(target.getX(), target.getY());
+
+        Queue<Position> frontier  = new LinkedList<>();
+        Set<Position> visited = new HashSet<>();
+        Map<Position, Position> cameFrom = new HashMap<>();
+
+        frontier.add(start);
+        visited.add(start);
+
+        Position fountAdjacent = null;
+
+        while (!frontier.isEmpty()) {
+            Position current = frontier.poll();
+
+            int distanceToTarget = Math.max(Math.abs(current.x() - targetPos.x()), Math.abs(current.y() - targetPos.y()));
+
+            if (distanceToTarget == 1){
+                fountAdjacent = current;
+                break;
+            }
+
+            for (Direction direction : Direction.values()) {
+                Position next = new Position(current.x() + direction.getDx(), current.y() + direction.getDy());
+
+                if (!visited.contains(next) && arena.isWalkable(next)) {
+                    visited.add(next);
+                    cameFrom.put(next, current);
+                    frontier.add(next);
+                }
+            }
+        }
+
+        if (fountAdjacent == null || fountAdjacent.equals(start)) {
+            return null;
+        }
+
+        Position step = fountAdjacent;
+        while (!cameFrom.get(step).equals(start)) {
+            step = cameFrom.get(step);
+        }
+        return step;
     }
 
     public boolean isAlive() {
@@ -151,6 +197,7 @@ public abstract class Combatant {
     public int getY() { return y; }
     public Team getTeam() { return team; }
     public int getHp() { return hp; }
+    public int getSpeed(){return speed;}
 
 
 }

@@ -32,6 +32,8 @@ public class Simulation {
 
         while (turn <= maxTurns && !isSimOver()){
 
+            roster.sort(java.util.Comparator.comparingInt(Combatant::getSpeed).reversed());
+
             for (Combatant fighter : roster){
                 if(fighter.isAlive()){
                     fighter.takeTurn(arena);

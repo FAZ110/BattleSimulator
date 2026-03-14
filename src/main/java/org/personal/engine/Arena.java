@@ -18,17 +18,19 @@ public class Arena {
     private int height;
     private int width;
     private Map<Position, Combatant> grid;
-
     private Map<Position, Obstacle> obstacles;
     private Map<Position, Consumable> consumables;
 
+    private Random random;
 
-    public Arena(int height, int width) {
+
+    public Arena(int height, int width, long seed) {
         this.height = height;
         this.width = width;
         this.grid = new HashMap<>();
         this.obstacles = new HashMap<>();
         this.consumables = new HashMap<>();
+        this.random = new Random(seed);
     }
 
     public void spawn(Combatant fighter){
@@ -45,7 +47,6 @@ public class Arena {
     }
 
     public void generateEnvironment(int numberOfWalls, int numberOfConsumables){
-        Random random = new Random();
         System.out.println("Generating environment...");
 
 
@@ -53,11 +54,13 @@ public class Arena {
             int randX, randY;
 
             do{
-                randX = random.nextInt(width);
-                randY = random.nextInt(height);
+//                System.out.println("Generating wall...");
+                randX = this.random.nextInt(width);
+                randY = this.random.nextInt(height);
             }while (isTileTaken(randX, randY));
 
             spawnObstacle(new Position(randX, randY), new Wall());
+//            System.out.println("Wall placed");
 
         }
 
@@ -65,8 +68,8 @@ public class Arena {
             int randX, randY;
 
             do{
-                randX = random.nextInt(width);
-                randY = random.nextInt(height);
+                randX = this.random.nextInt(width);
+                randY = this.random.nextInt(height);
             }while (isTileTaken(randX, randY));
 
             spawnConsumable(new Position(randX, randY), new HealthPotion());
@@ -94,6 +97,14 @@ public class Arena {
     public Combatant getFighterAt(int x, int y){return  grid.get(new Position(x, y));}
 
     public java.util.Collection<Combatant> getAllFighters(){return grid.values();}
+
+
+    public boolean isWalkable(Position pos){
+        if (!isWithinBounds(pos.x(), pos.y())) return false;
+        if (obstacles.containsKey(pos)) return false;
+        if (isOccupied(pos.x(), pos.y())) return false;
+        return true;
+    }
 
     public boolean moveFighter(Combatant fighter, Position newPosition){
         if (!isWithinBounds(newPosition.x(), newPosition.y())){
@@ -155,6 +166,10 @@ public class Arena {
             System.out.println();
         }
         System.out.println("=============================================");
+    }
+
+    public Random getRandom(){
+        return this.random;
     }
 
 

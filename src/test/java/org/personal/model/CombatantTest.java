@@ -13,7 +13,7 @@ class CombatantTest {
     @BeforeEach
     void setUp() {
         // Given a fresh 10x10 arena before every test
-        arena = new Arena(10, 10);
+        arena = new Arena(10, 10, 1L);
     }
 
     // --- attemptAttack() Tests ---

@@ -14,7 +14,7 @@ class HealthPotionTest {
     @Test
     void testConsumptionHealsFighter() {
         // Given
-        Arena arena = new Arena(5, 5);
+        Arena arena = new Arena(5, 5, 1L);
         Combatant human = CombatantFactory.createHuman(Team.BLUE, 0, 0);
         human.takeDamage(8); // HP drops from 10 to 2
         arena.spawn(human);
