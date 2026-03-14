@@ -1,5 +1,6 @@
 package org.personal.model.environment;
 
+import org.personal.engine.Arena;
 import org.personal.model.Combatant;
 
 public class HealthPotion implements Consumable{
@@ -11,8 +12,8 @@ public class HealthPotion implements Consumable{
         return '+';
     }
 
-    public void consume(Combatant target) {
-        System.out.println(target.getClass().getSimpleName() + " drank a potion and healed " + healAmount + " HP!");
+    public void consume(Combatant target,  Arena arena) {
+        arena.logEvent(target.getClass().getSimpleName() + " drank a potion and healed " + healAmount + " HP!");
         target.heal(healAmount);
     }
 

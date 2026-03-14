@@ -47,6 +47,9 @@ public class Simulation {
             try{Thread.sleep(500);}catch(Exception e){}
 
         }
+
+        System.out.println("Simulation finished ");
+
     }
 
 

@@ -1,6 +1,7 @@
 package org.personal;
 
 import org.personal.engine.Arena;
+import org.personal.engine.ConsoleLogger;
 import org.personal.engine.Position;
 import org.personal.engine.Simulation;
 import org.personal.model.*;
@@ -17,6 +18,8 @@ public class Main {
         long seed = 42L;
 
         Arena arena = new Arena(height, width, seed);
+
+        arena.addObserver(new ConsoleLogger());
         arena.generateEnvironment(7,3);
         Simulation sim = new Simulation(arena, 50);
 

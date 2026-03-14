@@ -7,9 +7,7 @@ import org.personal.model.environment.HealthPotion;
 import org.personal.model.environment.Obstacle;
 import org.personal.model.environment.Wall;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Arena {
     private static final String RESET = "\u001B[0m";
@@ -22,6 +20,7 @@ public class Arena {
     private Map<Position, Consumable> consumables;
 
     private Random random;
+    private List<GameObserver> observers;
 
 
     public Arena(int height, int width, long seed) {
@@ -31,7 +30,21 @@ public class Arena {
         this.obstacles = new HashMap<>();
         this.consumables = new HashMap<>();
         this.random = new Random(seed);
+        this.observers = new ArrayList<>();
     }
+
+    public void addObserver(GameObserver observer) {
+        this.observers.add(observer);
+    }
+
+    public void logEvent(String message){
+        for (GameObserver observer : observers) {
+            observer.onEvent(message);
+        }
+    }
+
+
+
 
     public void spawn(Combatant fighter){
         Position position = new Position(fighter.getX(), fighter.getY());
@@ -128,7 +141,7 @@ public class Arena {
 
         if (consumables.containsKey(newPosition)){
             Consumable item = consumables.get(newPosition);
-            item.consume(fighter);
+            item.consume(fighter, this);
             consumables.remove(newPosition);
         }
         return true;
