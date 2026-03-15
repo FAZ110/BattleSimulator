@@ -15,17 +15,18 @@ public class Main {
 
         int height = 10;
         int width = 10;
-        long seed = 42L;
+        long seed = System.currentTimeMillis();
+        System.out.println("Battle seed: " + seed);
 
         Arena arena = new Arena(height, width, seed);
 
         arena.addObserver(new ConsoleLogger());
-        arena.generateEnvironment(7,3);
+        arena.generateEnvironment(7,10);
         Simulation sim = new Simulation(arena, 50);
 
         Random random = new Random(seed);
 
-        for (int i=0 ; i<3; i++){
+        for (int i=0 ; i<6; i++){
 
             int randomX, randomY;
 
@@ -38,7 +39,7 @@ public class Main {
             sim.addFighter(CombatantFactory.createMage(Team.BLUE, randomX, randomY));
         }
 
-        for (int i=0 ; i<3; i++){
+        for (int i=0 ; i<5; i++){
 
             int randomX, randomY;
 

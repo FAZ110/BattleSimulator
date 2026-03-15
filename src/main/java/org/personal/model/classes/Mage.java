@@ -16,28 +16,23 @@ public class Mage extends Combatant {
 
     @Override
     public boolean attemptAttack(Arena arena) {
-        Direction[] AllDirections = Direction.values();
-
         Position bestPosition = null;
         int bestNumberOfTargets = 0;
 
-        for (Direction direction : AllDirections) {
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dy = -2; dy <= 2; dy++) {
 
-            for (int distance = 1; distance <= 2; distance++){
-
-                int targetX = this.getX() + direction.getDx()*distance;
-                int targetY = this.getY() + direction.getDy()*distance;
+                int targetX = this.getX() + dx;
+                int targetY = this.getY() + dy;
 
                 int numberOfTargets = enemiesAround(arena, new Position(targetX, targetY));
-                if (numberOfTargets > bestNumberOfTargets){
+                if (numberOfTargets > bestNumberOfTargets) {
                     bestNumberOfTargets = numberOfTargets;
                     bestPosition = new Position(targetX, targetY);
                 }
-
-
             }
-
         }
+
         if (bestPosition != null){
             for (int dx = -1; dx <= 1; dx++){
                 for (int dy = -1; dy <= 1; dy++){
@@ -48,10 +43,14 @@ public class Mage extends Combatant {
                     Combatant target = arena.getFighterAt(targetX, targetY);
 
                     if (target != null && target.getTeam() != this.getTeam()){
+                        int hpBefore = target.getHp();
                         target.takeDamage(this.attackPower);
+
+                        this.damageDealt += (hpBefore - target.getHp());
                         arena.logEvent(this.getClass().getSimpleName() + " attacks " + target.getClass().getSimpleName() + " for " + this.attackPower + " damage!");
 
                         if(!target.isAlive()){
+                            this.kills++;
                             arena.logEvent(target.getClass().getSimpleName() + " has died!");
                             arena.removeFighter(target);
                         }

@@ -9,12 +9,14 @@ import java.util.List;
 public class Simulation {
     private Arena arena;
     private List<Combatant> roster;
+    private List<Combatant> allParticipants; //stats
     private int maxTurns;
 
 
     public Simulation(Arena arena, int maxTurns) {
         this.arena = arena;
         this.roster = new ArrayList<>();
+        this.allParticipants = new ArrayList<>();
         this.maxTurns = maxTurns;
 
     }
@@ -22,6 +24,7 @@ public class Simulation {
     public void addFighter(Combatant fighter){
         arena.spawn(fighter);
         roster.add(fighter);
+        allParticipants.add(fighter);
     }
 
     public void start(){
@@ -49,6 +52,7 @@ public class Simulation {
         }
 
         System.out.println("Simulation finished ");
+        printPostMatchReport();
 
     }
 
@@ -65,6 +69,34 @@ public class Simulation {
         }
         return true;
 
+    }
+
+
+    private void printPostMatchReport() {
+        System.out.println("\n=============================================");
+        System.out.println("            POST MATCH STATISTICS            ");
+        System.out.println("=============================================");
+
+        // Sort fighters by Kills (Descending), and then by Damage Dealt
+        allParticipants.sort((f1, f2) -> {
+            if (f1.getKills() != f2.getKills()) {
+                return Integer.compare(f2.getKills(), f1.getKills());
+            }
+            return Integer.compare(f2.getDamageDealt(), f1.getDamageDealt());
+        });
+
+        System.out.printf("%-15s %-10s %-10s %-10s %-10s\n", "Fighter", "Kills", "Dmg Dealt", "Dmg Taken", "Healed");
+        System.out.println("-------------------------------------------------------------");
+
+        for (Combatant f : allParticipants) {
+            // Give them a " (DEAD)" tag if they didn't survive
+            String status = f.isAlive() ? "" : " (RIP)";
+            String name = f.getTeam() + " " + f.getClass().getSimpleName() + status;
+
+            System.out.printf("%-15s %-10d %-10d %-10d %-10d\n",
+                    name, f.getKills(), f.getDamageDealt(), f.getDamageTaken(), f.getHealingReceived());
+        }
+        System.out.println("=============================================\n");
     }
 
 }

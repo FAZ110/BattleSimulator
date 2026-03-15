@@ -9,7 +9,7 @@ public class KitingBehavior implements CombatBehavior {
     public void executeTurn(Combatant self, Arena arena){
         Combatant prey = self.findClosestEnemy(arena);
 
-        if (prey != null) {
+        if (prey == null) {
             self.moveRandomly(arena);
             return;
         }
@@ -17,6 +17,7 @@ public class KitingBehavior implements CombatBehavior {
         int distanceX = Math.abs(self.getX() - prey.getX());
         int distanceY = Math.abs(self.getY() - prey.getY());
         int distance = Math.max(distanceX, distanceY);
+
 
         if (distance == 1) {
             self.moveAwayFrom(arena, prey);

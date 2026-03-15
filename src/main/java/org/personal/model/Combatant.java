@@ -18,6 +18,13 @@ public abstract class Combatant {
     protected CombatBehavior behavior;
 
 
+    protected int damageDealt = 0;
+    protected int damageTaken = 0;
+    protected int kills = 0;
+    protected int healingReceived = 0;
+
+
+
     public Combatant(Team team, int hp, int attackPower, int speed, int x, int y) {
         this.team = team;
         this.maxHp = hp;
@@ -45,11 +52,15 @@ public abstract class Combatant {
             Combatant target = arena.getFighterAt(targetX, targetY);
 
             if (target != null && this.team != target.getTeam() && target != this && target.isAlive()){
+                int hpBefore = target.getHp();
                 target.takeDamage(this.attackPower);
+
+                this.damageDealt += (hpBefore - target.getHp());
 
                 arena.logEvent(this.getClass().getSimpleName() + " attacks " + target.getClass().getSimpleName() + " for " + this.attackPower + " damage!");
 
                 if(!target.isAlive()){
+                    this.kills++;
                     arena.logEvent(target.getClass().getSimpleName() + " has died!");
                     arena.removeFighter(target);
                 }
@@ -183,20 +194,17 @@ public abstract class Combatant {
     }
 
     public void takeDamage(int damage) {
-        this.hp -= damage;
-        if (this.hp < 0) {
-            this.hp = 0;
-        }
+
+        int actualDamage = Math.min(this.hp, damage);
+        this.hp -= actualDamage;
+        this.damageTaken += actualDamage;
 
     }
 
     public void heal(int healAmount){
-
-        if (this.hp +  healAmount > maxHp){
-            this.hp = maxHp;
-        }else{
-            this.hp += healAmount;
-        }
+        int actualHeal = Math.min(maxHp - this.hp, healAmount); // Don't over-heal
+        this.hp += actualHeal;
+        this.healingReceived += actualHeal;
     }
 
     public void setBehavior(CombatBehavior behavior) {
@@ -216,6 +224,11 @@ public abstract class Combatant {
     public Team getTeam() { return team; }
     public int getHp() { return hp; }
     public int getSpeed(){return speed;}
+
+    public int getDamageDealt() { return damageDealt; }
+    public int getDamageTaken() { return damageTaken; }
+    public int getKills() { return kills; }
+    public int getHealingReceived() { return healingReceived; }
 
 
 }
