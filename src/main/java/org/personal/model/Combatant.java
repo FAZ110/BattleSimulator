@@ -3,6 +3,7 @@ package org.personal.model;
 import org.personal.engine.Arena;
 import org.personal.engine.Direction;
 import org.personal.engine.Position;
+import org.personal.model.behavior.CombatBehavior;
 
 import java.util.*;
 
@@ -14,6 +15,7 @@ public abstract class Combatant {
     protected int speed;
     protected int x;
     protected int y;
+    protected CombatBehavior behavior;
 
 
     public Combatant(Team team, int hp, int attackPower, int speed, int x, int y) {
@@ -27,21 +29,13 @@ public abstract class Combatant {
     }
 
     public void takeTurn(Arena arena) {
-        boolean attacked = attemptAttack(arena);
-
-        if(!attacked){
-            Combatant prey = findClosestEnemy(arena);
-
-            if (prey != null) {
-                moveTowards(arena, prey);
-            }else{
-                moveRandomly(arena);
-            }
+        if (this.behavior != null) {
+            this.behavior.executeTurn(this, arena);
         }
 
     }
 
-    protected boolean attemptAttack(Arena arena) {
+    public boolean attemptAttack(Arena arena) {
         Direction[] allDirections = Direction.values();
 
         for (Direction direction : allDirections) {
@@ -66,7 +60,7 @@ public abstract class Combatant {
         return false;
     }
 
-    protected void moveRandomly(Arena arena) {
+    public void moveRandomly(Arena arena) {
         Direction[] allDirections = Direction.values();
 
         boolean succesfulMove = false;
@@ -85,7 +79,7 @@ public abstract class Combatant {
         }
     }
 
-    protected Combatant findClosestEnemy(Arena arena) {
+    public Combatant findClosestEnemy(Arena arena) {
         Combatant closestEnemy = null;
         int shortestDistance = Integer.MAX_VALUE;
 
@@ -107,7 +101,7 @@ public abstract class Combatant {
         return closestEnemy;
     }
 
-    protected void moveTowards(Arena arena, Combatant target) {
+    public void moveTowards(Arena arena, Combatant target) {
         Position nextStep = getNextStepTowards(arena, target);
 
         if (nextStep != null) {
@@ -117,6 +111,23 @@ public abstract class Combatant {
             }
         }else{
             moveRandomly(arena);
+        }
+    }
+
+    public void moveAwayFrom(Arena arena, Combatant target){
+
+        int desiredDx = Integer.compare(this.x, target.getX());
+        int desiredDy = Integer.compare(this.y, target.getY());
+
+        int escapeX = this.x + desiredDx;
+        int escapeY = this.y + desiredDy;
+        Position stepPosition = new Position(escapeX, escapeY);
+
+        boolean successfulMove = arena.moveFighter(this, stepPosition);
+        if (!successfulMove){
+            if(!attemptAttack(arena)){
+                moveRandomly(arena);
+            }
         }
     }
 
@@ -186,6 +197,10 @@ public abstract class Combatant {
         }else{
             this.hp += healAmount;
         }
+    }
+
+    public void setBehavior(CombatBehavior behavior) {
+        this.behavior = behavior;
     }
 
     public void setPosition(int newX, int newY) {

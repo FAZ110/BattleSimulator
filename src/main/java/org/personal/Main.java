@@ -13,8 +13,8 @@ public class Main {
 
         System.out.println("Starting Battle simulation...");
 
-        int height = 8;
-        int width = 8;
+        int height = 10;
+        int width = 10;
         long seed = 42L;
 
         Arena arena = new Arena(height, width, seed);
@@ -35,6 +35,7 @@ public class Main {
             }while (arena.isTileTaken(randomX, randomY));
 
             sim.addFighter(CombatantFactory.createHuman(Team.BLUE, randomX, randomY));
+            sim.addFighter(CombatantFactory.createMage(Team.BLUE, randomX, randomY));
         }
 
         for (int i=0 ; i<3; i++){

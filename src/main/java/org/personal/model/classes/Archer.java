@@ -5,53 +5,15 @@ import org.personal.engine.Direction;
 import org.personal.engine.Position;
 import org.personal.model.Combatant;
 import org.personal.model.Team;
+import org.personal.model.behavior.KitingBehavior;
 
 public class Archer extends Combatant {
 
     public Archer(Team team, int hp, int attackPower, int speed, int x, int y) {
         super(team, hp, attackPower, speed, x, y);
+        this.setBehavior(new KitingBehavior());
     }
 
-    // ARCHER KITES
-    @Override
-    public void takeTurn(Arena arena){
-        Combatant prey = findClosestEnemy(arena);
-
-        if(prey == null){
-            moveRandomly(arena);
-            return;
-        }
-
-        int distanceX = Math.abs(this.x - prey.getX());
-        int distanceY = Math.abs(this.y - prey.getY());
-        int distance = Math.max(distanceX, distanceY);
-
-        if (distance == 1){
-            moveAwayFrom(arena, prey);
-        }else if (distance == 2){
-            System.out.println("safe distance");
-            attemptAttack(arena);
-        }else{
-            moveTowards(arena, prey);
-        }
-    }
-
-    private void moveAwayFrom(Arena arena, Combatant target){
-
-        int desiredDx = Integer.compare(this.x, target.getX());
-        int desiredDy = Integer.compare(this.y, target.getY());
-
-        int escapeX = this.x + desiredDx;
-        int escapeY = this.y + desiredDy;
-        Position stepPosition = new Position(escapeX, escapeY);
-
-        boolean successfulMove = arena.moveFighter(this, stepPosition);
-        if (!successfulMove){
-            if(!attemptAttack(arena)){
-                moveRandomly(arena);
-            }
-        }
-    }
 
     @Override
     public boolean attemptAttack(Arena arena){
