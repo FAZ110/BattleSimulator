@@ -111,6 +111,12 @@ public class Arena {
 
     public java.util.Collection<Combatant> getAllFighters(){return grid.values();}
 
+    public Obstacle getObstacleAt(int x, int y){
+        return obstacles.get(new Position(x, y));
+    }
+    public Consumable getConsumableAt(int x, int y){
+        return consumables.get(new Position(x, y));
+    }
 
     public boolean isWalkable(Position pos){
         if (!isWithinBounds(pos.x(), pos.y())) return false;

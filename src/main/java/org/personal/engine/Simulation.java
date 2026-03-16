@@ -56,6 +56,22 @@ public class Simulation {
 
     }
 
+    public void playOneTurn(){
+        if (isSimOver()){
+            System.out.println("Simulation over");
+            return;
+        }
+
+        roster.sort(java.util.Comparator.comparingInt(Combatant::getSpeed).reversed());
+
+        for (Combatant fighter : roster){
+            if(fighter.isAlive()){
+                fighter.takeTurn(arena);
+            }
+        }
+        roster.removeIf(fighter -> !fighter.isAlive());
+    }
+
 
     private boolean isSimOver(){
         if(roster.isEmpty()) return true;
