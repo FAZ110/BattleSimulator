@@ -1,9 +1,6 @@
 package org.personal.model;
 
-import org.personal.model.classes.Archer;
-import org.personal.model.classes.Human;
-import org.personal.model.classes.Mage;
-import org.personal.model.classes.Zombie;
+import org.personal.model.classes.*;
 
 public class CombatantFactory {
 
@@ -20,4 +17,6 @@ public class CombatantFactory {
     }
 
     public static Combatant createMage(Team team, int x, int y){return  new Mage(team, 3, 3, 5, x, y);}
+
+    public static Combatant createHealer(Team team, int x, int y){return new Healer(team, 3, 1, 2, 4, x, y);}
 }

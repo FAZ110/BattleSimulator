@@ -189,6 +189,36 @@ public abstract class Combatant {
         return step;
     }
 
+    public Combatant findBestHealTarget(Arena arena) {
+        Combatant bestTarget = null;
+        double highestUrgency = -9999;
+
+        for (Combatant target : arena.getAllFighters()) {
+            if(target.getTeam() == this.team && target.isAlive() && target != this && target.getHp() < target.getMaxHp()){
+
+                int distanceX = Math.abs(this.x - target.getX());
+                int distanceY = Math.abs(this.y - target.getY());
+                int distance = Math.max(distanceX, distanceY);
+
+                int missingHp =  target.getMaxHp() - target.getHp();
+                double urgency = missingHp - (distance*1.5);
+
+                if (urgency > highestUrgency) {
+                    highestUrgency = urgency;
+                    bestTarget = target;
+                }
+            }
+        }
+        return bestTarget;
+
+
+    }
+
+
+    public boolean attemptHeal(Arena arena) {
+        return false;
+    }
+
     public boolean isAlive() {
         return this.hp > 0;
     }
@@ -223,6 +253,7 @@ public abstract class Combatant {
     public int getY() { return y; }
     public Team getTeam() { return team; }
     public int getHp() { return hp; }
+    public int getMaxHp() { return maxHp; }
     public int getSpeed(){return speed;}
 
     public int getDamageDealt() { return damageDealt; }

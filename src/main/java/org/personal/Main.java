@@ -37,6 +37,7 @@ public class Main {
 
             sim.addFighter(CombatantFactory.createHuman(Team.BLUE, randomX, randomY));
             sim.addFighter(CombatantFactory.createMage(Team.BLUE, randomX, randomY));
+            sim.addFighter(CombatantFactory.createHealer(Team.BLUE, randomX, randomY));
         }
 
         for (int i=0 ; i<5; i++){
@@ -50,6 +51,7 @@ public class Main {
 
             sim.addFighter(CombatantFactory.createZombie(Team.RED, randomX,randomY));
             sim.addFighter(CombatantFactory.createArcher(Team.RED, randomX,randomY));
+            sim.addFighter(CombatantFactory.createHealer(Team.RED, randomX, randomY));
 
         }
 
